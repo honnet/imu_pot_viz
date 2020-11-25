@@ -3,42 +3,46 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 
-#define BNO055_SAMPLERATE_DELAY_MS (50)
+#define BNO055_SAMPLERATE_DELAY_MS (1)
 
 // Check I2C device address and correct line below (by default address is 0x29 or 0x28)
 Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29);  // id, address
 
-const int LED = 6;
+const int LED = 13;
+const int potA = A0;
+const int potB = A1;
 
 
 void setup(void)
 {
-    pinMode(27, OUTPUT); digitalWrite(27, HIGH);  // Pin to power the IMU
-    pinMode(38, OUTPUT); digitalWrite(38, HIGH);  // Pin to power the potentiometer
+    pinMode(A3, OUTPUT); digitalWrite(A3, HIGH);  // Pin to power the IMU
     pinMode(LED, OUTPUT);
 
-    Serial.begin(115200);
     while(!Serial); // wait
-    
+    Serial.begin(115200);
+
     if(!bno.begin()) {
         while(1) {
-            Serial.println("No BNO055 detected... Check wiring or I2C ADDR!");
+            Serial.println("No BNO055 detected!");
             delay(1000);
         }
     }
-    bno.setExtCrystalUse(true); // TODO test both
 }
 
 void loop(void)
 {
     imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    Serial.print( euler.x() ); Serial.print( '\t' ); // TODO: pick only 1
-    Serial.print( euler.y() ); Serial.print( '\t' ); // TODO: pick only 1
-    Serial.print( euler.z() ); Serial.print( '\t' ); // TODO: pick only 1
-    Serial.print( analogRead(A1) ); Serial.print( '\n' );
+    Serial.print( euler.z() ); Serial.print( '\t' );
+    Serial.print( analogRead(potA)); Serial.print( '\t' );
+    Serial.print( analogRead(potB)); Serial.print( '\n' );
 
     delay(BNO055_SAMPLERATE_DELAY_MS);
-    digitalWrite(LED, !digitalRead(LED));
+
+    static int timeStamp = 0;
+    if (millis() - timeStamp > 50) {
+        digitalWrite(LED, !digitalRead(LED));
+        timeStamp = millis();
+    }
 }
 
 /*

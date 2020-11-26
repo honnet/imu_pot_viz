@@ -9,8 +9,7 @@
 Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x29);  // id, address
 
 const int LED = 13;
-const int potA = A0;
-const int potB = A1;
+const int pots[] = {A0, A1};
 
 
 void setup(void)
@@ -33,8 +32,8 @@ void loop(void)
 {
     imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     Serial.print( euler.z() ); Serial.print( '\t' );
-    Serial.print( analogRead(potA)); Serial.print( '\t' );
-    Serial.print( analogRead(potB)); Serial.print( '\n' );
+    Serial.print( analogRead(pots[0])); Serial.print( '\t' );
+    Serial.print( analogRead(pots[1])); Serial.print( '\n' );
 
     delay(BNO055_SAMPLERATE_DELAY_MS);
 

@@ -26,11 +26,12 @@ void draw() {
   circle(xc, yc, norm*2);
 
   // Potentiometers line :
-  stroke(0, 255, 0); // green
+  color[] colors = {color(0, 222, 255), color(0, 255, 222)};
   for (int i = 0; i < 2; i++) {
     float potAngle = map(pots[i] , minPots[i],maxPots[i], 0, -PI/2);
     int xp = int(cos(potAngle) * norm);
     int yp = int(sin(potAngle) * norm);
+    stroke(colors[i]); // green & blue
     line(xc,yc , xc+xp,yc+yp);
   }
 
